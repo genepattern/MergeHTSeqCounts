@@ -51,13 +51,16 @@ def loadCountData(files):
         filebasename, file_extension = os.path.splitext(sampleName)
         sampleName = filebasename
 
-        #specifically to  the VIB workshop data strip out "all_counts"
+        #specific to the VIB workshop data - strip out "all_counts"
         #string from the sample name
         sampleName = re.sub(r'_all_counts', "", sampleName)
 
         sampleNames.append(sampleName)
+        lines = []
         with open(files[i]) as textFile:
-            lines = [line.split() for line in textFile]
+            for line in textFile:
+                if not line.startswith('__'):
+                    lines.append(line.split())
         if i == 0:
             maxRows = len(lines)
 
@@ -94,10 +97,10 @@ def mergeCountFiles(countTable, outputPrefix):
             assert len(sampleTable[r]) == 2, 'Expecting two columns found ' + len(sampleTable[r])
             if i == 0:
                 rowName = sampleTable[r][0]
-                if rowName.startswith('__'):
-                    #skip the row
-                    break
                 output.write('\n')
+                output.write(rowName)
+                #put the rowName also in the description column
+                output.write('\t')
                 output.write(rowName)
 
             output.write('\t')
