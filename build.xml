@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project basedir="" default="create-zip" name="MergeHTSeqCounts">
+<property name="dirOffset" value="../common_module_code" />
+<import file="${dirOffset}/commontargets.xml" />
+
+<target name="create-zip" depends="init">
+    <antcall target="prezip"/>
+    <zip destfile="${dest.dir}/${ant.project.name}.zip" whenempty="fail" defaultexcludes="true">
+        <fileset dir="." includes="manifest, doc.html"/>
+        <zipfileset dir="src" includes="*.py"/>
+    </zip>
+    <antcall target="postzip"/>
+</target>
+
+</project>
+
