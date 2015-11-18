@@ -5,7 +5,7 @@ from optparse import OptionParser
 sampleNames = []
 
 def main():
-    usage =  "Usage: %s --input=<input file> --output=<output prefix"
+    usage =  "Usage: %s --input=<input file> --output=<output prefix>"
     parser = OptionParser(usage=usage)
     parser.add_option("-i", "--input",
             action="store", type="string", dest="inputFileList",
