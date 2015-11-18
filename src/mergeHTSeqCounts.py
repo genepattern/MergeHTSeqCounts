@@ -29,7 +29,16 @@ def readFileList(fileList):
         line = line.strip()
         result = line.split('\t')
         if len(result) >= 1:
-            files.append(result[0])
+            filepath = result[0]
+            assert os.path.exists(filepath), 'File does not exist: ' + filepath
+
+            #if it is a directory then get all the files in that directory
+            if os.path.isdir(filepath):
+                subFiles = [os.path.join(filepath,fName) for fName in next(os.walk(filepath))[2]]
+                subFiles.sort()
+                files += subFiles
+            else:
+                files.append(filepath)
     return files
 
 #files is a list of file paths
@@ -75,11 +84,11 @@ def mergeCountFiles(countTable, outputPrefix):
     output.write('\n')
     output.write('Name')
     output.write('\t')
+    output.write('Description')
+    output.write('\t')
     output.write('\t'.join(sampleNames))
 
     for r in range (maxRows):
-        output.write('\n')
-
         for i in range (len(countTable)):
             sampleTable = countTable[i]
             assert len(sampleTable[r]) == 2, 'Expecting two columns found ' + len(sampleTable[r])
@@ -88,6 +97,7 @@ def mergeCountFiles(countTable, outputPrefix):
                 if rowName.startswith('__'):
                     #skip the row
                     break
+                output.write('\n')
                 output.write(rowName)
 
             output.write('\t')
