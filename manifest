@@ -36,7 +36,7 @@ p2_value=
 
 privacy=private
 quality=development
-taskDoc=
+taskDoc=doc.html
 taskType=RNA-seq
 userid=nazaire@broadinstitute.org
 version=
