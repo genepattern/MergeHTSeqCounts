@@ -1,0 +1,42 @@
+#MergeHTSeqCounts
+#Tue Nov 17 16:05:47 EST 2015
+JVMLevel=
+LSID=urn\:lsid\:8080.nazaire.null.null\:genepatternmodules\:36\:1
+author=;Broad Institute.org
+categories=RNA-seq
+commandLine=<python_2.6> <libdir>mergeHTSeqCounts.py --input=<input.files> --output=<output.prefix>
+cpuType=any
+description=Merges HTSeq read count data files into one file
+fileFormat=txt
+language=Python
+name=MergeHTSeqCounts
+os=any
+p1_MODE=IN
+p1_TYPE=FILE
+p1_default_value=
+p1_description=A directory or one or more text files containing HTSeq read counts
+p1_fileFormat=txt
+p1_flag=
+p1_name=input.files
+p1_numValues=0+
+p1_optional=
+p1_prefix=
+p1_prefix_when_specified=
+p1_type=java.io.File
+p1_value=
+
+p2_default_value=<input.files_basename>
+p2_description=The base name of the output file. File extensions will be added automatically.
+p2_name=output.prefix
+p2_optional=
+p2_prefix_when_specified=
+p2_type=java.lang.String
+p2_value=
+
+
+privacy=private
+quality=development
+taskDoc=
+taskType=RNA-seq
+userid=nazaire@broadinstitute.org
+version=
