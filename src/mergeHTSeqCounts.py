@@ -92,16 +92,23 @@ def mergeCountFiles(countTable, outputPrefix):
     output.write('\t'.join(sampleNames))
 
     for r in range (maxRows):
+        firstSampleRowName = countTable[0][r][0]
+
         for i in range (len(countTable)):
             sampleTable = countTable[i]
             assert len(sampleTable[r]) == 2, 'Expecting two columns found ' + len(sampleTable[r])
+
+            currentSampleRowName = sampleTable[r][0]
+
+            #check that the feature names are the same in each file
+            assert firstSampleRowName == currentSampleRowName, 'Error: row names differ in row %s' % (r+1) + '. ' +  firstSampleRowName + ' ' + currentSampleRowName
+
             if i == 0:
-                rowName = sampleTable[r][0]
                 output.write('\n')
-                output.write(rowName)
+                output.write(firstSampleRowName)
                 #put the rowName also in the description column
                 output.write('\t')
-                output.write(rowName)
+                output.write(firstSampleRowName)
 
             output.write('\t')
 

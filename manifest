@@ -11,6 +11,7 @@ fileFormat=txt
 language=Python
 name=MergeHTSeqCounts
 os=any
+
 p1_MODE=IN
 p1_TYPE=FILE
 p1_default_value=
@@ -39,4 +40,4 @@ quality=development
 taskDoc=doc.html
 taskType=RNA-seq
 userid=nazaire@broadinstitute.org
-version=
+version=Added check that the row names are identical across files
