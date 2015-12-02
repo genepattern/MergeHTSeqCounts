@@ -40,4 +40,4 @@ quality=development
 taskDoc=doc.html
 taskType=RNA-seq
 userid=nazaire@broadinstitute.org
-version=Added check that the row names are identical across files
+version=Beta release
