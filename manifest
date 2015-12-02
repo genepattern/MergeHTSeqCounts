@@ -2,7 +2,7 @@
 #Tue Nov 17 16:05:47 EST 2015
 JVMLevel=
 LSID=urn\:lsid\:8080.nazaire.null.null\:genepatternmodules\:36\:1
-author=;Broad Institute.org
+author=Broad Institute
 categories=RNA-seq
 commandLine=<python_2.6> <libdir>mergeHTSeqCounts.py --input=<input.files> --output=<output.prefix>
 cpuType=any
