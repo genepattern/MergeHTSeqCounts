@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 from optparse import OptionParser
 
 sampleNames = []
@@ -30,7 +31,9 @@ def readFileList(fileList):
         result = line.split('\t')
         if len(result) >= 1:
             filepath = result[0]
-            assert os.path.exists(filepath), 'File does not exist: ' + filepath
+            if not os.path.exists(filepath):
+                sys.stderr.write('File does not exist: ' + filepath + '\n')
+                exit(1)
 
             #if it is a directory then get all the files in that directory
             if os.path.isdir(filepath):
@@ -64,57 +67,79 @@ def loadCountData(files):
         if i == 0:
             maxRows = len(lines)
 
-        assert maxRows == len(lines), '\nNumber of rows differs in file ' + files[i]
+        if maxRows != len(lines):
+            sys.stderr.write('Number of rows differs in file ' + files[i] + '\n')
+            exit(1)
         fileTables.append(lines)
 
     return fileTables
 
 def mergeCountFiles(countTable, outputPrefix):
-
     #a list of 2d arrays for each sample
-    assert len(countTable) > 0, 'Count table is empty'
+    if len(countTable) == 0:
+        raise ValueError('Count table is empty\n')
 
-    assert len(outputPrefix) > 0, 'No prefix given for the output file name'
+    if len(outputPrefix) == 0:
+        raise ValueError('No prefix given for the output file name.\n')
+
     outputFileName = outputPrefix + ".gct"
-    output = open(outputFileName, "wb")
-    maxRows = len(countTable[0])
 
-    assert maxRows > 0, 'No rows found in data'
-    output.write('#1.2\n')
-    output.write('%s' % (maxRows))
-    output.write('\t')
-    output.write('%s' % (len(sampleNames)))
-    output.write('\n')
-    output.write('Name')
-    output.write('\t')
-    output.write('Description')
-    output.write('\t')
-    output.write('\t'.join(sampleNames))
+    finished = False
+    output = None
 
-    for r in range (maxRows):
-        firstSampleRowName = countTable[0][r][0]
+    try:
+        output = open(outputFileName, "wb")
+        maxRows = len(countTable[0])
 
-        for i in range (len(countTable)):
-            sampleTable = countTable[i]
-            assert len(sampleTable[r]) == 2, 'Expecting two columns found ' + len(sampleTable[r])
+        if maxRows == 0:
+            raise ValueError('No rows found in data.\n')
+        output.write('#1.2\n')
+        output.write('%s' % (maxRows))
+        output.write('\t')
+        output.write('%s' % (len(sampleNames)))
+        output.write('\n')
+        output.write('Name')
+        output.write('\t')
+        output.write('Description')
+        output.write('\t')
+        output.write('\t'.join(sampleNames))
 
-            currentSampleRowName = sampleTable[r][0]
+        for r in range (maxRows):
+            firstSampleRowName = countTable[0][r][0]
 
-            #check that the feature names are the same in each file
-            assert firstSampleRowName == currentSampleRowName, 'Error: row names differ in row %s' % (r+1) + '. ' +  firstSampleRowName + ' ' + currentSampleRowName
+            for i in range (len(countTable)):
+                sampleTable = countTable[i]
 
-            if i == 0:
-                output.write('\n')
-                output.write(firstSampleRowName)
-                #put the rowName also in the description column
+                if(len(sampleTable[r]) != 2):
+                    raise ValueError('Expecting two columns found %s. Please check that the input is valid.\n' % (len(sampleTable[r])))
+
+                currentSampleRowName = sampleTable[r][0]
+
+                #check that the feature names are the same in each file
+                if firstSampleRowName != currentSampleRowName:
+                    raise ValueError('Error: row names differ in row %s' % (r+1) + '. ' +  firstSampleRowName + ' ' + currentSampleRowName + '\n')
+
+                if i == 0:
+                    output.write('\n')
+                    output.write(firstSampleRowName)
+                    #put the rowName also in the description column
+                    output.write('\t')
+                    output.write(firstSampleRowName)
+
                 output.write('\t')
-                output.write(firstSampleRowName)
 
-            output.write('\t')
-
-            readCount = sampleTable[r][1]
-            output.write(readCount)
-    output.close()
+                readCount = sampleTable[r][1]
+                output.write(readCount)
+                finished = True
+    except ValueError, err:
+        sys.stderr.write(str(err))
+        exit(1)
+    finally:
+        if output != None:
+            output.close()
+        if finished != True:
+            #delete any partially created gct file
+            os.remove(outputFileName)
 
 main()
 
