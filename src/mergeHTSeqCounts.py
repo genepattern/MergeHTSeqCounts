@@ -1,11 +1,12 @@
 import os
 import re
+import csv
 from optparse import OptionParser
 
 sampleNames = []
 
 def main():
-    usage =  "Usage: %s --input=<input file> --output=<output prefix>"
+    usage =  "Usage: %s --input=<input file> --output=<output prefix>  --sampleInfoFile=<sampleinfo.file> --filenamesColumn=<filenames.column> --class.division.column=<class.division.column>"
     parser = OptionParser(usage=usage)
     parser.add_option("-i", "--input",
             action="store", type="string", dest="inputFileList",
@@ -13,12 +14,111 @@ def main():
     parser.add_option("-o", "--output",
             action="store", type="string", dest="outputPrefix",
             help="The base name of the output file")
+    parser.add_option("-s", "--sampleInfoFile",
+            action="store", type="string", dest="inputSampleInfoFile",
+            help="A sample info file containing HTSeq filenames and a column to base a cls file on")
+    parser.add_option("-f", "--filenamesColumn",
+            action="store", type="string", dest="inputFilenameColumn",
+            help="The column in the sample info file that specifies a phenotype to use to assign classes and create a class file for the input samples. This is only relevant if a sample info file is provided.")
+    parser.add_option("-c", "--classDivisionColumn",
+            action="store", type="string", dest="inputClassColumn",
+            help="The column in the sample info file that contains the filenames.  This is used to match up the class division column up to the appropriate input file. This can be either a column index (starting at 0) or a string matching the header of a column in the sample info file.")
+
+    parser.add_option("-n", "--sampleNameColumn",
+                      action="store", type="string", dest="sampleNameColumn",
+                      help="The column in the sample info file that contains the sample name or the desired column name in the generated gct file.")
 
     (options, args) = parser.parse_args()
 
     inputFiles = readFileList(options.inputFileList)
     countTable = loadCountData(inputFiles)
-    mergeCountFiles(countTable, options.outputPrefix)
+    
+    sampleInfo = None
+    sampleInfoFilename = nonEmptyString(options.inputSampleInfoFile)
+    inputFilenameColumn = nonEmptyString(options.inputFilenameColumn)
+    inputClassColumn = nonEmptyString(options.inputClassColumn)
+    sampleNameColumn = nonEmptyString(options.sampleNameColumn)
+
+    # do some input validation here if a sample info file is provided
+    # if either a sampleNameColumn or a inputClassColun is provided, we als MUST have an inputFilenameColumn
+    if (sampleInfoFilename != None):
+        if inputClassColumn is not None:
+            assert inputFilenameColumn is not None, "An input filename column is needed to create a cls file"
+        if sampleNameColumn is not None:
+            assert inputFilenameColumn is not None, "An input filename column is needed to remap sample identifiers"
+
+        sampleInfo = readSampleInfo(sampleInfoFilename,inputFilenameColumn, inputClassColumn, sampleNameColumn)
+	
+	
+    mergeCountFiles(countTable, options.outputPrefix, sampleInfo)
+
+
+def getValidIndex(headers, columnNameOrIndex):
+    try:
+        # assume its a column name
+        index = headers.index(columnNameOrIndex)
+    except ValueError:
+        # ok, now try to see if its an integer
+        try:
+            index = int(columnNameOrIndex)
+        except ValueError:
+            raise ValueError(
+                "The column index, " + columnNameOrIndex + ", is invalid or missing from the sample info file.")
+    assert index < len(headers), 'The column index is higher than the number of columns in the sample info file.'
+    return index
+
+def nonEmptyString(str):
+    if (str is not None):
+        if len(str.strip()) > 0:
+            return str.strip()
+    return None
+
+def readSampleInfo(filename, inputFilenameColumn, inputClassColumn, sampleNameColumn):
+    # if there is no input filename, we can't do anything with the sample info so bail out even though
+    # a file was provided but write a message to stderr
+    if inputFilenameColumn is None:
+        print("A sampleInfo file was provided but no input filename column was provided so the sampleInfo file will be ignored")
+        return None
+
+    sampleInfo = {}
+    fileClassMap = {}
+    headers = []
+    classes = set()
+    sampleInfo['writeClassFile'] = False
+    sampleNameMap = None
+
+    with open(filename) as infile:
+        reader = csv.reader(infile, delimiter="\t")
+        headers = next(reader)
+        if inputClassColumn is not None:
+            clsIdx = sampleInfo['clsColumnIndex'] = getValidIndex(headers, inputClassColumn)
+            sampleInfo['writeClassFile'] = True
+
+        fileIdx = sampleInfo['filenameIndex'] = getValidIndex(headers, inputFilenameColumn)
+        sampleNameIdx = -1
+
+        if (sampleNameColumn != None):
+            sampleNameIdx = sampleInfo['sampleNameIndex'] = getValidIndex(headers, sampleNameColumn)
+            sampleNameMap = {}
+
+        for row in reader:
+            # skip blank lines
+            if (len(row) == len(headers)):
+                if inputClassColumn is not None:
+                    fileClassMap[row[fileIdx]] = row[clsIdx]
+                    # count the number of unique classes defined in the approriate column
+                    classes.add(row[clsIdx])
+                # keep track of the sample name if different from the filename
+                if (sampleNameColumn != None):
+                    sampleNameMap[row[fileIdx]] = row[sampleNameIdx]
+
+    sampleInfo['fileClassMap'] = fileClassMap
+    #we want an ordered list of the classes (not a set) so that we can write the cls file properly
+    sampleInfo['classes'] = list(classes)
+    sampleInfo['numClasses'] = len(classes)
+    sampleInfo['sampleNameMap'] = sampleNameMap
+
+    return sampleInfo
 
 def readFileList(fileList):
     files =[]
@@ -69,14 +169,20 @@ def loadCountData(files):
 
     return fileTables
 
-def mergeCountFiles(countTable, outputPrefix):
+def mergeCountFiles(countTable, outputPrefix, sampleInfo=None):
+    if (sampleInfo != None):
+        writeClsFile = sampleInfo['writeClassFile']
+    else:
+        writeClsFile = False
 
     #a list of 2d arrays for each sample
     assert len(countTable) > 0, 'Count table is empty'
 
     assert len(outputPrefix) > 0, 'No prefix given for the output file name'
     outputFileName = outputPrefix + ".gct"
+
     output = open(outputFileName, "wb")
+
     maxRows = len(countTable[0])
 
     assert maxRows > 0, 'No rows found in data'
@@ -89,7 +195,26 @@ def mergeCountFiles(countTable, outputPrefix):
     output.write('\t')
     output.write('Description')
     output.write('\t')
-    output.write('\t'.join(sampleNames))
+
+    if not writeClsFile:
+        output.write('\t'.join(sampleNames))
+    elif (sampleInfo['sampleNameMap'] is None):
+        output.write('\t'.join(sampleNames))
+    else:
+        sampleNamesMapped = list(map(lambda x: sampleInfo['sampleNameMap'][x], sampleNames))
+        output.write('\t'.join(sampleNamesMapped))
+
+    if (writeClsFile ):
+        clsFileName = outputPrefix + ".cls"
+        clsFileOutput = open(clsFileName, "wb")
+        clsFileOutput.write('%s' % (len(sampleNames)));
+        clsFileOutput.write('\t')
+        clsFileOutput.write('%s' % sampleInfo['numClasses'])
+        clsFileOutput.write('\t1\n#')
+        clsFileOutput.write('\t'.join(sampleInfo['classes']))
+        clsFileOutput.write('\n')
+        cls = list(map(lambda x: str(sampleInfo['classes'].index(sampleInfo['fileClassMap'][x])), sampleNames))
+        clsFileOutput.write('\t'.join(cls))
 
     for r in range (maxRows):
         firstSampleRowName = countTable[0][r][0]
