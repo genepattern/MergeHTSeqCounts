@@ -144,7 +144,7 @@ def readFileList(fileList):
 #files is a list of file paths
 def loadCountData(files):
     maxRows = 0
-    fileTables = []
+    fileTables = {}
     for i in range(len(files)):
         global sampleNames
         sampleName = os.path.basename(files[i])
@@ -165,17 +165,19 @@ def loadCountData(files):
             maxRows = len(lines)
 
         assert maxRows == len(lines), '\nNumber of rows differs in file ' + files[i]
-        fileTables.append(lines)
+        fileTables[sampleName] =lines
 
     return fileTables
 
 def mergeCountFiles(countTable, outputPrefix, sampleInfo=None):
+    global sampleNames
     if (sampleInfo != None):
-        print(sampleNames)
         writeClsFile = sampleInfo['writeClassFile']
         # now sort the sample names so that the output writes samples of the same class adjacent to each other
-        sampleNames = sorted(sampleNames, key=lambda sample: sampleInfo['sampleNameMap'][sample])
-       
+        print(sampleNames)
+        sampleNames = sorted(sampleNames, key=lambda sample: sampleInfo['fileClassMap'][sample])
+        print(sampleNames)
+
 
     else:
         writeClsFile = False
@@ -188,7 +190,7 @@ def mergeCountFiles(countTable, outputPrefix, sampleInfo=None):
 
     output = open(outputFileName, "wb")
 
-    maxRows = len(countTable[0])
+    maxRows = len(countTable[sampleNames[0]])
 
     assert maxRows > 0, 'No rows found in data'
     output.write('#1.2\n')
@@ -222,10 +224,10 @@ def mergeCountFiles(countTable, outputPrefix, sampleInfo=None):
         clsFileOutput.write('\t'.join(cls))
 
     for r in range (maxRows):
-        firstSampleRowName = countTable[0][r][0]
+        firstSampleRowName = countTable[sampleNames[0]][r][0]
 
         for i in range (len(countTable)):
-            sampleTable = countTable[i]
+            sampleTable = countTable[sampleNames[i]]
             assert len(sampleTable[r]) == 2, 'Expecting two columns found ' + len(sampleTable[r])
 
             currentSampleRowName = sampleTable[r][0]
