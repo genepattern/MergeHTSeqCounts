@@ -87,7 +87,7 @@ def readSampleInfo(filename, inputFilenameColumn, inputClassColumn, sampleNameCo
     sampleInfo['writeClassFile'] = False
     sampleNameMap = None
 
-    with open(filename) as infile:
+    with open(filename,'rU') as infile:
         reader = csv.reader(infile, delimiter="\t")
         headers = next(reader)
         if inputClassColumn is not None:
