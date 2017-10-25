@@ -171,7 +171,12 @@ def loadCountData(files):
 
 def mergeCountFiles(countTable, outputPrefix, sampleInfo=None):
     if (sampleInfo != None):
+        print(sampleNames)
         writeClsFile = sampleInfo['writeClassFile']
+        # now sort the sample names so that the output writes samples of the same class adjacent to each other
+        sampleNames = sorted(sampleNames, key=lambda sample: sampleInfo['sampleNameMap'][sample])
+       
+
     else:
         writeClsFile = False
 
