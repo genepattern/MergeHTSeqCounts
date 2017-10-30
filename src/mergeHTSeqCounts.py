@@ -105,9 +105,10 @@ def readSampleInfo(filename, inputFilenameColumn, inputClassColumn, sampleNameCo
             # skip blank lines
             if (len(row) == len(headers)):
                 if inputClassColumn is not None:
-                    fileClassMap[row[fileIdx]] = row[clsIdx]
+                    className = row[clsIdx].strip().replace(' ', '_')
+                    fileClassMap[row[fileIdx]] = className
                     # count the number of unique classes defined in the approriate column
-                    classes.add(row[clsIdx].strip().replace(' ', '_'))
+                    classes.add(className)
                 # keep track of the sample name if different from the filename
                 if (sampleNameColumn != None):
                     sampleNameMap[row[fileIdx]] = row[sampleNameIdx]
