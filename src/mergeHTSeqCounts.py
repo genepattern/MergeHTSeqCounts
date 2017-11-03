@@ -131,9 +131,7 @@ def readFileList(fileList):
         result = line.split('\t')
         if len(result) >= 1:
             filepath = result[0]
-            if not os.path.exists(filepath):
-                sys.stderr.write('File does not exist: ' + filepath + '\n')
-                exit(1)
+            assert os.path.exists(filepath), 'File does not exist: ' + filepath
 
             #if it is a directory then get all the files in that directory
             if os.path.isdir(filepath):
@@ -186,12 +184,9 @@ def mergeCountFiles(countTable, outputPrefix, sampleInfo=None):
         writeClsFile = False
 
     #a list of 2d arrays for each sample
-    if len(countTable) == 0:
-        raise ValueError('Count table is empty\n')
+    assert len(countTable) > 0, 'Count table is empty'
 
-    if len(outputPrefix) == 0:
-        raise ValueError('No prefix given for the output file name.\n')
-
+    assert len(outputPrefix) > 0, 'No prefix given for the output file name'
     outputFileName = outputPrefix + ".gct"
 
     output = open(outputFileName, "wb")
@@ -248,62 +243,11 @@ def mergeCountFiles(countTable, outputPrefix, sampleInfo=None):
                 output.write('\t')
                 output.write(firstSampleRowName)
 
-    finished = False
-    output = None
+            output.write('\t')
 
-    try:
-        output = open(outputFileName, "wb")
-        maxRows = len(countTable[0])
-
-        if maxRows == 0:
-            raise ValueError('No rows found in data.\n')
-        output.write('#1.2\n')
-        output.write('%s' % (maxRows))
-        output.write('\t')
-        output.write('%s' % (len(sampleNames)))
-        output.write('\n')
-        output.write('Name')
-        output.write('\t')
-        output.write('Description')
-        output.write('\t')
-        output.write('\t'.join(sampleNames))
-
-        for r in range (maxRows):
-            firstSampleRowName = countTable[0][r][0]
-
-            for i in range (len(countTable)):
-                sampleTable = countTable[i]
-
-                if(len(sampleTable[r]) != 2):
-                    raise ValueError('Expecting two columns found %s. Please check that the input is valid.\n' % (len(sampleTable[r])))
-
-                currentSampleRowName = sampleTable[r][0]
-
-                #check that the feature names are the same in each file
-                if firstSampleRowName != currentSampleRowName:
-                    raise ValueError('Error: row names differ in row %s' % (r+1) + '. ' +  firstSampleRowName + ' ' + currentSampleRowName + '\n')
-
-                if i == 0:
-                    output.write('\n')
-                    output.write(firstSampleRowName)
-                    #put the rowName also in the description column
-                    output.write('\t')
-                    output.write(firstSampleRowName)
-
-                output.write('\t')
-
-                readCount = sampleTable[r][1]
-                output.write(readCount)
-                finished = True
-    except ValueError, err:
-        sys.stderr.write(str(err))
-        exit(1)
-    finally:
-        if output != None:
-            output.close()
-        if finished != True:
-            #delete any partially created gct file
-            os.remove(outputFileName)
+            readCount = sampleTable[r][1]
+            output.write(readCount)
+    output.close()
 
 main()
 
