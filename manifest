@@ -75,7 +75,7 @@ p3_value=
 
 
 privacy=public
-quality=develop
+quality=development
 taskDoc=doc.html
 taskType=RNA-seq
 userid=liefeld@broadinstitute.org
