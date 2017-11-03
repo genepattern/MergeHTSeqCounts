@@ -74,7 +74,7 @@ p3_value=
 
 
 
-privacy=public
+privacy=private
 quality=development
 taskDoc=doc.html
 taskType=RNA-seq
