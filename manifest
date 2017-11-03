@@ -75,8 +75,8 @@ p3_value=
 
 
 privacy=public
-quality=preproduction
+quality=develop
 taskDoc=doc.html
 taskType=RNA-seq
 userid=liefeld@broadinstitute.org
-version=Beta release with added feature of cls file creation
+version=Beta release with added feature of cls file creation and sample renaming
