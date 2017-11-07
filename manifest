@@ -1,7 +1,7 @@
 #MergeHTSeqCounts
 #Tue Nov 17 16:05:47 EST 2015
 JVMLevel=
-LSID=urn\:lsid\:broad.mit.edu\:cancer.software.genepattern.module.analysis\:00354\:0.4
+LSID=urn\:lsid\:broad.mit.edu\:cancer.software.genepattern.module.analysis\:00354\:0.6
 author=Broad Institute & Univeristy of California San Diego
 categories=RNA-seq
 commandLine=<python_2.6> <libdir>mergeHTSeqCounts.py --input=<input.files> --output=<output.prefix> --sampleInfoFile=<sampleinfo.file> --filenamesColumn=<filenames.column> --classDivisionColumn=<class.division.column> --sampleNameColumn=<sample.name.column>
@@ -74,8 +74,8 @@ p3_value=
 
 
 
-privacy=private
-quality=development
+privacy=public
+quality=preproduction
 taskDoc=doc.html
 taskType=RNA-seq
 userid=liefeld@broadinstitute.org
