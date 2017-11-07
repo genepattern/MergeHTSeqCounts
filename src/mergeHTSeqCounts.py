@@ -176,6 +176,7 @@ def mergeCountFiles(countTable, outputPrefix, sampleInfo=None):
         writeClsFile = sampleInfo['writeClassFile']
         # now sort the sample names so that the output writes samples of the same class adjacent to each other
         print(sampleNames)
+        print(sampleInfo['fileClassMap'])
         sampleNames = sorted(sampleNames, key=lambda sample: sampleInfo['fileClassMap'][sample])
         print(sampleNames)
 
@@ -218,7 +219,7 @@ def mergeCountFiles(countTable, outputPrefix, sampleInfo=None):
         clsFileOutput.write('%s' % (len(sampleNames)));
         clsFileOutput.write('\t')
         clsFileOutput.write('%s' % sampleInfo['numClasses'])
-        clsFileOutput.write('\t1\n#')
+        clsFileOutput.write('\t1\n#\t')
         clsFileOutput.write('\t'.join(sampleInfo['classes']))
         clsFileOutput.write('\n')
         cls = list(map(lambda x: str(sampleInfo['classes'].index(sampleInfo['fileClassMap'][x])), sampleNames))
