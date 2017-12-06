@@ -4,7 +4,7 @@
 module: MergeHTSeqCounts
 name: nightly_smoke_defaults_MergeHTSeqCounts
 params:
-       input.files: ["ftp://gpftp.broadinstitute.org/gpunit/MergeHTSeqCounts/input/SRR1039508_all_counts.txt", "ftp://gpftp.broadinstitute.org/gpunit/MergeHTSeqCounts/input/SRR1039509_all_counts.txt"]
+       input.files: "ftp://gpftp.broadinstitute.org/gpunit/MergeHTSeqCounts/input/"
        output.file.name: "<input.files_basename>"
 assertions:
        jobStatus: success
