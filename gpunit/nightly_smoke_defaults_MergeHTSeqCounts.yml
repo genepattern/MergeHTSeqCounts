@@ -4,7 +4,7 @@
 module: MergeHTSeqCounts
 name: nightly_smoke_defaults_MergeHTSeqCounts
 params:
-       input.file: "<%gpunit.testData%>gpunit/MergeHTSeqCounts/input/"
+       input.files: "<%gpunit.testData%>gpunit/MergeHTSeqCounts/input/"
        output.file.name: "<input.files_basename>"
 assertions:
        jobStatus: success
