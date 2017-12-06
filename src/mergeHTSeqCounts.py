@@ -154,7 +154,7 @@ def loadCountData(files):
 
         #specific to the VIB workshop data - strip out "all_counts"
         #string from the sample name
-        sampleName = re.sub(r'_all_counts', "", sampleName)
+        #sampleName = re.sub(r'_all_counts', "", sampleName):
 
         sampleNames.append(sampleName)
         lines = []
