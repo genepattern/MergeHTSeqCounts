@@ -154,7 +154,7 @@ def loadCountData(files):
 
         #specific to the VIB workshop data - strip out "all_counts"
         #string from the sample name
-        sampleName = re.sub(r'_all_counts', "", sampleName)
+        #sampleName = re.sub(r'_all_counts', "", sampleName):
 
         sampleNames.append(sampleName)
         lines = []
@@ -175,9 +175,7 @@ def mergeCountFiles(countTable, outputPrefix, sampleInfo=None):
     if (sampleInfo != None):
         writeClsFile = sampleInfo['writeClassFile']
         # now sort the sample names so that the output writes samples of the same class adjacent to each other
-        print(sampleNames)
         sampleNames = sorted(sampleNames, key=lambda sample: sampleInfo['fileClassMap'][sample])
-        print(sampleNames)
 
 
     else:
@@ -218,7 +216,7 @@ def mergeCountFiles(countTable, outputPrefix, sampleInfo=None):
         clsFileOutput.write('%s' % (len(sampleNames)));
         clsFileOutput.write('\t')
         clsFileOutput.write('%s' % sampleInfo['numClasses'])
-        clsFileOutput.write('\t1\n#')
+        clsFileOutput.write('\t1\n#\t')
         clsFileOutput.write('\t'.join(sampleInfo['classes']))
         clsFileOutput.write('\n')
         cls = list(map(lambda x: str(sampleInfo['classes'].index(sampleInfo['fileClassMap'][x])), sampleNames))
