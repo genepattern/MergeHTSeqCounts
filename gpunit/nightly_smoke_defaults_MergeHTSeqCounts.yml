@@ -1,4 +1,4 @@
-#lsid=urn:lsid:broad.mit.edu:cancer.software.genepattern.module.analysis:00354:0.5
+#lsid=urn:lsid:broad.mit.edu:cancer.software.genepattern.module.analysis:00354:0.7
 #
 #Test data is from http://wiki.bits.vib.be/index.php/NGS_RNASeq_DE_Exercise.4#download_exercise_files HTSeqCounts
 module: MergeHTSeqCounts
