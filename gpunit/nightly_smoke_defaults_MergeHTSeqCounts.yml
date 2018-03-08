@@ -4,7 +4,22 @@
 module: MergeHTSeqCounts
 name: nightly_smoke_defaults_MergeHTSeqCounts
 params:
-       input.files: "ftp://gpftp.broadinstitute.org/gpunit/MergeHTSeqCounts/input/"
+       input.files: ["ftp://gpftp.broadinstitute.org/gpunit/MergeHTSeqCounts/input/SRR1039508_all_counts.txt", 
+          "ftp://gpftp.broadinstitute.org/gpunit/MergeHTSeqCounts/input/SRR1039512_all_counts.txt",
+          "ftp://gpftp.broadinstitute.org/gpunit/MergeHTSeqCounts/input/SRR1039516_all_counts.txt",
+          "ftp://gpftp.broadinstitute.org/gpunit/MergeHTSeqCounts/input/SRR1039520_all_counts.txt",
+          "ftp://gpftp.broadinstitute.org/gpunit/MergeHTSeqCounts/input/SRR1039509_all_counts.txt",
+          "ftp://gpftp.broadinstitute.org/gpunit/MergeHTSeqCounts/input/SRR1039513_all_counts.txt",
+          "ftp://gpftp.broadinstitute.org/gpunit/MergeHTSeqCounts/input/SRR1039517_all_counts.txt",
+          "ftp://gpftp.broadinstitute.org/gpunit/MergeHTSeqCounts/input/SRR1039521_all_counts.txt",
+          "ftp://gpftp.broadinstitute.org/gpunit/MergeHTSeqCounts/input/SRR1039510_all_counts.txt",
+          "ftp://gpftp.broadinstitute.org/gpunit/MergeHTSeqCounts/input/SRR1039514_all_counts.txt",
+          "ftp://gpftp.broadinstitute.org/gpunit/MergeHTSeqCounts/input/SRR1039518_all_counts.txt",
+          "ftp://gpftp.broadinstitute.org/gpunit/MergeHTSeqCounts/input/SRR1039522_all_counts.txt",
+          "ftp://gpftp.broadinstitute.org/gpunit/MergeHTSeqCounts/input/SRR1039511_all_counts.txt",
+          "ftp://gpftp.broadinstitute.org/gpunit/MergeHTSeqCounts/input/SRR1039515_all_counts.txt",
+          "ftp://gpftp.broadinstitute.org/gpunit/MergeHTSeqCounts/input/SRR1039519_all_counts.txt",
+          "ftp://gpftp.broadinstitute.org/gpunit/MergeHTSeqCounts/input/SRR1039523_all_counts.txt"]
        output.file.name: "<input.files_basename>"
 assertions:
        jobStatus: success
