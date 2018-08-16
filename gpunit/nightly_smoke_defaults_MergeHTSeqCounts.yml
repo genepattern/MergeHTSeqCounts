@@ -28,6 +28,6 @@ params:
           "https://data.bits.vib.be/pub/trainingen/NGSRNADE2015/ex4-files/htseq_counts/SRR1039515_all_counts.txt",
           "https://data.bits.vib.be/pub/trainingen/NGSRNADE2015/ex4-files/htseq_counts/SRR1039519_all_counts.txt",
           "https://data.bits.vib.be/pub/trainingen/NGSRNADE2015/ex4-files/htseq_counts/SRR1039523_all_counts.txt"]
-       output.file.name: "<input.files_basename>"
+       output.prefix: "<input.files_basename>"
 assertions:
        jobStatus: success

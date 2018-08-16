@@ -26,6 +26,6 @@ params:
           "input/SRR1039515_all_counts.txt",
           "input/SRR1039519_all_counts.txt",
           "input/SRR1039523_all_counts.txt"]
-       output.file.name: "<input.files_basename>"
+       output.prefix: "<input.files_basename>"
 assertions:
        jobStatus: success
