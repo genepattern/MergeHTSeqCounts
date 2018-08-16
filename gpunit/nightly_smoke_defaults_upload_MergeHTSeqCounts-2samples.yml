@@ -12,8 +12,8 @@
 module: MergeHTSeqCounts
 name: nightly_smoke_defaults_MergeHTSeqCounts
 params:
-       input.files: ["https://data.bits.vib.be/pub/trainingen/NGSRNADE2015/ex4-files/htseq_counts/SRR1039508_all_counts.txt", 
-          "https://data.bits.vib.be/pub/trainingen/NGSRNADE2015/ex4-files/htseq_counts/SRR1039512_all_counts.txt"]
+       input.files: ["input/SRR1039508_all_counts.txt", 
+          "input/SRR1039512_all_counts.txt"]
        output.prefix: "<input.files_basename>"
 assertions:
        jobStatus: success
