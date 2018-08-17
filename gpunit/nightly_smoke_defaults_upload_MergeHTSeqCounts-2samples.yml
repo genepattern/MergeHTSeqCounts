@@ -1,0 +1,19 @@
+#lsid=urn:lsid:broad.mit.edu:cancer.software.genepattern.module.analysis:00354:0.7
+#
+# Test data is from http://wiki.bits.vib.be/index.php/NGS_RNASeq_DE_Exercise.4#download_exercise_files HTSeqCounts
+#   https://data.bits.vib.be/pub/trainingen/NGSRNADE2015/ex4-files/htseq_counts/
+#   e.g.
+#   https://data.bits.vib.be/pub/trainingen/NGSRNADE2015/ex4-files/htseq_counts/SRR1039512_all_counts.txt
+# Mirrored here:
+#   ftp://gpftp.broadinstitute.org/gpunit/MergeHTSeqCounts/input/
+#   e.g.
+#   ftp://gpftp.broadinstitute.org/gpunit/MergeHTSeqCounts/input/SRR1039512_all_counts.txt
+#
+module: MergeHTSeqCounts
+name: nightly_smoke_defaults_MergeHTSeqCounts
+params:
+       input.files: ["input/SRR1039508_all_counts.txt", 
+          "input/SRR1039512_all_counts.txt"]
+       output.prefix: "<input.files_basename>"
+assertions:
+       jobStatus: success
