@@ -5,9 +5,9 @@
 #   e.g.
 #   https://data.bits.vib.be/pub/trainingen/NGSRNADE2015/ex4-files/htseq_counts/SRR1039512_all_counts.txt
 # Mirrored here:
-#   ftp://gpftp.broadinstitute.org/gpunit/MergeHTSeqCounts/input/
+#   https://datasets.genepattern.org/gpftp/gpunit/MergeHTSeqCounts/input
 #   e.g.
-#   ftp://gpftp.broadinstitute.org/gpunit/MergeHTSeqCounts/input/SRR1039512_all_counts.txt
+#   https://datasets.genepattern.org/gpftp/gpunit/MergeHTSeqCounts/input/SRR1039512_all_counts.txt
 #
 module: MergeHTSeqCounts
 name: nightly_smoke_defaults_MergeHTSeqCounts
